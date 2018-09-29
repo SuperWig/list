@@ -16,6 +16,7 @@ class list //TODO define copy and move assign ctor/assign
 		node_base(node_base* p, node_base* n) : prev(p), next(n) {}
 		node_base* prev;
 		node_base* next;
+
 		node* as_node() { return static_cast<node*>(this); }
 	};
 	struct node : node_base
@@ -25,7 +26,8 @@ class list //TODO define copy and move assign ctor/assign
 		node(T&& val) : data(std::forward<T>(val)) {}
 		T data;
 	};
-	void add_node(node_base* prev, node_base* next, const T& val);
+	node* add_node(node_base* prev, node_base* next, const T& val);
+	void delete_node(node_base* node);
 
 	node_base end_;
 	std::size_t	size_;
@@ -39,8 +41,8 @@ public:
 	const_iterator begin() const noexcept { return end_.next; }
 	const_iterator cbegin() const noexcept { return end_.next; }
 	iterator end() noexcept { return &end_; }
-	const_iterator end() const noexcept { return &end_; }
-	const_iterator cend() const noexcept { return &end_ ; }
+	const_iterator end() const noexcept { return const_cast<node_base*>(&end_); }
+	const_iterator cend() const noexcept { return const_cast<node_base*>(&end_); }
 
 	reference front();
 	const_reference front() const;
@@ -48,13 +50,19 @@ public:
 	const_reference back() const;
 
 	std::size_t size() const noexcept { return size_; }
+	[[nodiscard]]
+	bool empty() const { return !size_; }
+
 	void push_back(const T& val);
 	void push_front(const T& val);
+	iterator insert(const_iterator pos, const T& val);
+	//iterator insert(const_iterator pos, T&& val);
 };
 
 template<typename T>
 struct list<T>::iterator
 {
+	friend class list;
 	using self_type = iterator;
 	using value_type = T;
 	using reference = T&;
@@ -74,13 +82,14 @@ private:
 template<typename T>
 struct list<T>::const_iterator
 {
+	friend class list;
 	using self_type = const_iterator;
 	using value_type = T;
 	using reference = const T&;
 	using pointer = const T*;
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = int;
-	const_iterator(const node_base* node) : current_(node) {}
+	const_iterator(node_base* node) : current_(node) {}
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
 	self_type operator++() { self_type cur = current_; current_ = current_->next; return cur; }
@@ -88,7 +97,7 @@ struct list<T>::const_iterator
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
 private:
-	const node_base* current_;
+	node_base* current_;
 };
 
 template <class T>
@@ -127,12 +136,22 @@ list<T>::~list()
 }
 
 template <class T>
-void list<T>::add_node(node_base* prev, node_base* next, const T& val)
+typename list<T>::node* list<T>::add_node(node_base* prev, node_base* next, const T& val)
 {
 	auto* new_node = new node(prev, next, val);
 	new_node->next->prev = new_node;
 	new_node->prev->next = new_node;
 	++size_;
+	return new_node;
+}
+
+template <class T>
+void list<T>::delete_node(node_base* node)
+{
+	node->prev->next = node->next;
+	node->next->prev = node->prev;
+	delete node;
+	--size_;
 }
 
 template<class T>
@@ -145,4 +164,10 @@ template <class T>
 void list<T>::push_front(const T& val)
 {
 	add_node(&end_, end_.next, val);
+}
+
+template <class T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, const T& val)
+{
+	return add_node(pos.current_->prev, pos.current_, val);
 }

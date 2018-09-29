@@ -21,9 +21,15 @@ using namespace std;
 int main()
 {
 	list<int> list;
+	fmt::print("{}\n", list.empty());
 	list.push_back(4);
+	fmt::print("{}\n", list.empty());
 	list.push_back(2);
-	const auto& f = list.front();
-	auto& b = list.back();
+	auto beg = list.cbegin();
+	list.insert(beg, 3);
+	for(auto el = list.cbegin(); el != list.cend(); ++el)
+	{
+		fmt::print("{}\n", *el);
+	}
 	return 0;
 }

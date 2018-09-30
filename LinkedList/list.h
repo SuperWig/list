@@ -21,9 +21,8 @@ class list //TODO define copy and move assign ctor/assign
 	};
 	struct node : node_base
 	{
-		node(T val) : data(std::move(val)) {}
-		node(node_base* prev, node_base* next, T val) : node_base{ prev, next }, data(std::move(val)) {}
-		node(T&& val) : data(std::forward<T>(val)) {}
+		node(node_base* prev, node_base* next, const T& val) : node_base{ prev, next }, data(val) {}
+		node(node_base* prev, node_base* next, T&& val) : node_base{ prev, next }, data(val) {}
 		T data;
 	};
 	node* add_node(node_base* prev, node_base* next, const T& val);

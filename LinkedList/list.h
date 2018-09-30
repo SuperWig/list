@@ -13,11 +13,11 @@ class list //TODO define copy and move assign ctor/assign
 	struct node_base
 	{
 		node_base() : prev(this), next(this) {}
-		node_base(node_base* p, node_base* n) : prev(p), next(n) {}
+		node_base(node_base* p, node_base* n) : prev(p), next(n) {}		
+		node* as_node() { return static_cast<node*>(this); }
+
 		node_base* prev;
 		node_base* next;
-
-		node* as_node() { return static_cast<node*>(this); }
 	};
 	struct node : node_base
 	{
@@ -25,6 +25,7 @@ class list //TODO define copy and move assign ctor/assign
 		node(node_base* prev, node_base* next, T&& val) : node_base{ prev, next }, data(val) {}
 		T data;
 	};
+	node* add_node(node_base* prev, node_base* next, T&& val);
 	node* add_node(node_base* prev, node_base* next, const T& val);
 	void delete_node(node_base* node);
 
@@ -53,9 +54,11 @@ public:
 	bool empty() const { return !size_; }
 
 	void push_back(const T& val);
+	void push_back(T&& val);
 	void push_front(const T& val);
+	void push_front(T&& val);
 	iterator insert(const_iterator pos, const T& val);
-	//iterator insert(const_iterator pos, T&& val);
+	iterator insert(const_iterator pos, T&& val);
 };
 
 template<typename T>
@@ -135,6 +138,16 @@ list<T>::~list()
 }
 
 template <class T>
+typename list<T>::node* list<T>::add_node(node_base* prev, node_base* next, T&& val)
+{
+	auto* new_node = new node(prev, next, std::forward<T>(val));
+	new_node->next->prev = new_node;
+	new_node->prev->next = new_node;
+	++size_;
+	return new_node;
+}
+
+template <class T>
 typename list<T>::node* list<T>::add_node(node_base* prev, node_base* next, const T& val)
 {
 	auto* new_node = new node(prev, next, val);
@@ -160,13 +173,30 @@ void list<T>::push_back(const T& val)
 }
 
 template <class T>
+void list<T>::push_back(T&& val)
+{
+	add_node(end_.prev, &end_, std::forward<T>(val));
+}
+
+template <class T>
 void list<T>::push_front(const T& val)
 {
 	add_node(&end_, end_.next, val);
 }
 
 template <class T>
+void list<T>::push_front(T&& val)
+{
+	add_node(&end, end_.next, val);
+}
+template <class T>
 typename list<T>::iterator list<T>::insert(const_iterator pos, const T& val)
 {
 	return add_node(pos.current_->prev, pos.current_, val);
+}
+
+template <class T>
+typename list<T>::iterator list<T>::insert(const_iterator pos, T&& val)
+{
+	return add_node(pos.current_->prev, pos.current_, std::forward<T>(val));
 }

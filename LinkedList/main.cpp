@@ -12,24 +12,27 @@
 //#define STD 
 #ifdef STD
 #include <list>
+using namespace std;
 #else
 #include "list.h"
 #endif
 #include <string>
 #include <fmt/core.h>
-using namespace std;
+
+struct S
+{
+	S() { puts("S()"); }
+	S(const S&) { puts("S(const S&)"); }
+	S(S&&) { puts("S(S&&)"); }
+	S& operator=(const S&) { puts("S(const S&)"); return *this; }
+	S& operator=(S&&) { puts("S(S&&)"); return *this; }
+	~S() { puts("~S()"); }
+};
 int main()
 {
-	list<int> list;
-	fmt::print("{}\n", list.empty());
-	list.push_back(4);
-	fmt::print("{}\n", list.empty());
-	list.push_back(2);
-	auto beg = list.cbegin();
-	list.insert(beg, 3);
-	for(auto el = list.cbegin(); el != list.cend(); ++el)
-	{
-		fmt::print("{}\n", *el);
-	}
+	list<S> list;
+	//S s;
+	list.push_back(S());
+	//list.push_back(2);
 	return 0;
 }

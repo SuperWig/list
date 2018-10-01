@@ -8,9 +8,9 @@
 // {
 // 	REQUIRE(1 == 1);
 // }
-
-//#define STD 
-#ifdef STD
+#define LVAL 1
+#define STD 1
+#if STD == 1
 #include <list>
 using namespace std;
 #else
@@ -31,8 +31,11 @@ struct S
 int main()
 {
 	list<S> list;
-	//S s;
+#if LVAL == 1
+	S s;
+	list.push_back(s);
+#else
 	list.push_back(S());
-	//list.push_back(2);
+#endif
 	return 0;
 }

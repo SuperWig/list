@@ -8,8 +8,8 @@
 // {
 // 	REQUIRE(1 == 1);
 // }
-#define LVAL 1
-#define STD 1
+#define LVAL 0
+#define STD 0
 #if STD == 1
 #include <list>
 using namespace std;
@@ -22,10 +22,11 @@ using namespace std;
 struct S
 {
 	S() { puts("S()"); }
+	S(int) { puts("S(int)"); }
 	S(const S&) { puts("S(const S&)"); }
-	S(S&&) { puts("S(S&&)"); }
+	S(S&&) noexcept { puts("S(S&&)"); }
 	S& operator=(const S&) { puts("S(const S&)"); return *this; }
-	S& operator=(S&&) { puts("S(S&&)"); return *this; }
+	S& operator=(S&&) noexcept { puts("S(S&&)"); return *this; }
 	~S() { puts("~S()"); }
 };
 int main()
@@ -35,7 +36,7 @@ int main()
 	S s;
 	list.push_back(s);
 #else
-	list.push_back(S());
+	list.emplace_back(2);
 #endif
 	return 0;
 }

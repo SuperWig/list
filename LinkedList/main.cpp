@@ -31,12 +31,18 @@ struct S
 };
 int main()
 {
-	list<S> list;
+	list<int> list;
 #if LVAL == 1
 	S s;
 	list.push_back(s);
 #else
-	list.emplace_back(2);
+	list.push_back(2);
+	list.push_back(3);
+	list.push_back(4);
+	for (auto iter = list.begin(); iter != list.end(); ++iter)
+	{
+		fmt::print("{}\n", *iter);
+	}
 #endif
 	return 0;
 }

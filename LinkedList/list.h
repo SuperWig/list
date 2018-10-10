@@ -23,6 +23,8 @@ class list //TODO define copy and move assign ctor/assign
 	{
 		node(node_base* prev, node_base* next, const T& val) : node_base{ prev, next }, data(val) {}
 		node(node_base* prev, node_base* next, T&& val) : node_base{ prev, next }, data(std::move(val)) {}
+		template<typename...Args>
+		node(node_base* prev, node_base* next, Args&&... val) : node_base{ prev, next }, data(std::forward<Args>(val)...) {}
 		T data;
 	};
 	template<class T>
@@ -206,24 +208,23 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, T&& val)
 
 template<class T>
 template<class ...Args>
-inline typename list<T>::reference list<T>::emplace_back(Args && ...args)
+inline typename list<T>::reference list<T>::emplace_back(Args&& ...args)
 {
-	node* new_node = new node(end_.prev, &end_, T(std::forward<Args>(args)...));
-	new_node->prev->next = new_node;
-	new_node->next->prev = new_node;
-	++size_;
+	node* new_node = add_node(end_.prev, &end_, std::forward<Args>(args)...);
 	return new_node->data;
 }
 template<class T>
 template<class ...Args>
-inline typename list<T>::reference list<T>::emplace_front(Args && ...args)
+inline typename list<T>::reference list<T>::emplace_front(Args&& ...args)
 {
-	//
+	node* new_node = add_node(&end_, end_.next, std::forward<Args>(args)...);
+	return new_node->data;
 }
 template<class T>
 template<class ...Args>
 inline typename list<T>::iterator list<T>::emplace(list<T>::const_iterator pos, Args && ...args)
 {
-	//return iterator();
+	node* new_node = add_node(pos.current_->prev, pos.current_, std::forward<Args>(args)...);
+	return new_node;
 }
 

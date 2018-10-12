@@ -95,6 +95,17 @@ public:
 	iterator emplace(const_iterator pos, Args&&... args);
 };
 
+template <class T>
+list<T>::~list()
+{
+	for (node_base* next = end_.next; next != &end_; )
+	{
+		node* del = static_cast<node*>(next);
+		next = next->next;
+		delete del;
+	}
+}
+
 template<typename T>
 struct list<T>::iterator
 {
@@ -201,17 +212,6 @@ typename list<T>::const_reference list<T>::back() const
 }
 
 template <class T>
-list<T>::~list()
-{
-	for(node_base* next = end_.next; next != &end_; )
-	{
-		node* del = static_cast<node*>(next);
-		next = next->next;
-		delete del;
-	}
-}
-
-template <class T>
 void list<T>::delete_node(node_base* node)
 {
 	node->prev->next = node->next;
@@ -271,7 +271,7 @@ inline typename list<T>::reference list<T>::emplace_front(Args&& ...args)
 }
 template<class T>
 template<class ...Args>
-inline typename list<T>::iterator list<T>::emplace(list<T>::const_iterator pos, Args && ...args)
+inline typename list<T>::iterator list<T>::emplace(list<T>::const_iterator pos, Args&& ...args)
 {
 	node* new_node = add_node(pos.current_->prev, pos.current_, std::forward<Args>(args)...);
 	return new_node;

@@ -39,9 +39,10 @@ int main()
 	list.push_back(2);
 	list.push_back(3);
 	list.push_back(4);
-	for (auto iter = list.begin(); iter != list.end(); ++iter)
+	list.reverse();
+	for (auto el : list)
 	{
-		fmt::print("{}\n", *iter);
+		fmt::print("{}\n", el);
 	}
 #endif
 	return 0;

@@ -93,6 +93,8 @@ public:
 	reference emplace_front(Args&&... args);
 	template<class... Args>
 	iterator emplace(const_iterator pos, Args&&... args);
+
+	void reverse() noexcept;
 };
 
 template <class T>
@@ -105,7 +107,7 @@ list<T>::~list()
 		delete del;
 	}
 }
-
+	
 template<typename T>
 struct list<T>::iterator
 {
@@ -277,3 +279,16 @@ inline typename list<T>::iterator list<T>::emplace(list<T>::const_iterator pos, 
 	return new_node;
 }
 
+template<class T>
+void list<T>::reverse() noexcept
+{
+	for (node_base* current = &end_; ;)
+	{
+		node_base* next = current->next;
+		current->next = current->prev;
+		current->prev = next;
+		if (next == &end_)
+			break;
+		current = next;
+	}
+}

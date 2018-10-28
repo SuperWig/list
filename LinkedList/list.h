@@ -27,7 +27,7 @@ class list //TODO define copy and move assign ctor/assign
 		node(node_base* prev, node_base* next, Args&&... val) : node_base{ prev, next }, data(std::forward<Args>(val)...) {}
 		T data;
 	};
-	template<class T>
+	template<class>
 	node* add_node(node_base* prev, node_base* next, T&& val)
 	{
 		auto* new_node = new node(prev, next, std::forward<T>(val));
@@ -36,7 +36,7 @@ class list //TODO define copy and move assign ctor/assign
 		++size_;
 		return new_node;
 	}
-	template<class T, class ...Args>
+	template<class ...Args>
 	node* add_node(node_base* prev, node_base* next, Args&&... val)
 	{
 		auto* new_node = new node(prev, next, std::forward<Args>(val)...);

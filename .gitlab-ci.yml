@@ -5,6 +5,7 @@ before_script:
   - apt-get update && apt-get install -y clang 
   #cmake --allow-unauthenticated
   - wget https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp
+  - ls
 
 # Try to compile our sample hello world app
 compile:

@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include "../catch.hpp"
 #include "../LinkedList/list.h"
 
 struct std_s
@@ -29,7 +29,7 @@ struct my_s
 std::size_t std_s::count = 0;
 std::size_t my_s::count = 0;
 
-constexpr void reset_count()
+void reset_count()
 {
 	std_s::count = 0;
 	my_s::count = 0;

@@ -1,4 +1,5 @@
 #define CATCH_CONFIG_MAIN
+#include <list>
 #include "../catch.hpp"
 #include "../LinkedList/list.h"
 

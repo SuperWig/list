@@ -2,22 +2,17 @@ image: gcc:latest
 
 # Define commands that run before each job's script
 before_script:
-  - apt-get update && apt-get install -y clang cmake --allow-unauthenticated
-  - wget https://github.com/fmtlib/fmt/archive/5.2.1.tar.gz
-  - tar xf 5.2.1.tar.gz
-  - cd fmt-5.2.1
-  - cmake .
-  - cmake --build .
-  - make install
-  - cd ..
+  - apt-get update && apt-get install -y clang 
+  #cmake --allow-unauthenticated
+  - wget https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp
 
 # Try to compile our sample hello world app
 compile:
   script:
-  - g++ LinkedList/main.cpp -lfmt -Wall -Wextra -Wpedantic -o list
+  - g++ LinkedList/test.cpp -Wall -Wextra -Wpedantic -o test
   # Verify that our compiled app works properly with a custom "test" script
   #- ./verify.sh
   # Save the compiled output from the above for downloading via GitLab and in Gitlab 8.6 to use in future build steps
-  artifacts:
-    paths:
-    - list
+  #artifacts:
+    #paths:
+    #- list

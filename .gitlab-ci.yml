@@ -14,12 +14,10 @@ before_script:
 # Try to compile our sample hello world app
 compile:
   script:
-  #-Wall -Wextra -Wpedantic -Wshadow
-  - g++ LinkedList/main.cpp -lfmt -o helloworld
-  - ls
+  - g++ LinkedList/main.cpp -lfmt -Wall -Wextra -Wpedantic -Wshadow -o list
   # Verify that our compiled app works properly with a custom "test" script
   #- ./verify.sh
   # Save the compiled output from the above for downloading via GitLab and in Gitlab 8.6 to use in future build steps
   artifacts:
     paths:
-    - helloworld
+    - list

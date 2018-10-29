@@ -4,7 +4,7 @@
 
 
 template<class T>
-class list //TODO define copy and move assign ctor/assign
+class list
 {
 	using reference = T&;
 	using const_reference = const T&;
@@ -22,20 +22,10 @@ class list //TODO define copy and move assign ctor/assign
 	struct node : node_base
 	{
 		node(node_base* prev, node_base* next, const T& val) : node_base{ prev, next }, data(val) {}
-		node(node_base* prev, node_base* next, T&& val) : node_base{ prev, next }, data(std::move(val)) {}
 		template<typename...Args>
 		node(node_base* prev, node_base* next, Args&&... val) : node_base{ prev, next }, data(std::forward<Args>(val)...) {}
 		T data;
 	};
-	template<class>
-	node* add_node(node_base* prev, node_base* next, T&& val)
-	{
-		auto* new_node = new node(prev, next, std::forward<T>(val));
-		new_node->next->prev = new_node;
-		new_node->prev->next = new_node;
-		++size_;
-		return new_node;
-	}
 	template<class ...Args>
 	node* add_node(node_base* prev, node_base* next, Args&&... val)
 	{
@@ -102,7 +92,7 @@ list<T>::~list()
 {
 	for (node_base* next = end_.next; next != &end_; )
 	{
-		node* del = static_cast<node*>(next);
+		node* del = next->as_node();
 		next = next->next;
 		delete del;
 	}
@@ -243,7 +233,7 @@ void list<T>::push_front(const T& val)
 template <class T>
 void list<T>::push_front(T&& val)
 {
-	add_node(&end, end_.next, val);
+	add_node(&end_, end_.next, std::move(val));
 }
 template <class T>
 typename list<T>::iterator list<T>::insert(const_iterator pos, const T& val)

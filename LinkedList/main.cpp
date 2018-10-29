@@ -22,8 +22,8 @@ using namespace std;
 struct S
 {
 	S() { puts("S()"); }
-	S(int i) { puts("S(int)"); }
-	S(const S& s) { puts("S(const S&)"); }
+	S(int) { puts("S(int)"); }
+	S(const S&) { puts("S(const S&)"); }
 	S(S&&) noexcept { puts("S(S&&)"); }
 	S& operator=(const S&) { puts("S(const S&)"); return *this; }
 	S& operator=(S&&) noexcept { puts("S(S&&)"); return *this; }

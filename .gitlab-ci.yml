@@ -5,7 +5,7 @@ before_script:
   - apt-get update && apt-get install -y clang 
   - cd /usr/local/include/
   - wget https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp
-  - cd ~/LinkedList
+  - cd /builds/Superwig/list/LinkedList
 
 # Try to compile our sample hello world app
 gcc:

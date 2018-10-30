@@ -7,7 +7,12 @@ before_script:
   - wget https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp
 
 # Try to compile our sample hello world app
-compile:
+gcc:
   script:
   - g++ test.cpp -Wall -Wextra -Wpedantic -o test
   - ./test
+clang:
+  script:
+  - clang++ test.cpp -Wall -Wextra -Wpedantic -o test
+  - ./test
+   

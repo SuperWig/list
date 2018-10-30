@@ -49,8 +49,8 @@ public:
 	const_iterator begin() const noexcept { return end_.next; }
 	const_iterator cbegin() const noexcept { return end_.next; }
 	iterator end() noexcept { return &end_; }
-	const_iterator end() const noexcept { return const_cast<node_base*>(&end_); }
-	const_iterator cend() const noexcept { return const_cast<node_base*>(&end_); }
+	const_iterator end() const noexcept { return &end_; }
+	const_iterator cend() const noexcept { return &end_; }
 
 	struct reverse_iterator;
 	struct const_reverse_iterator;
@@ -58,8 +58,8 @@ public:
 	const_reverse_iterator rbegin() const noexcept { return end_.prev; }
 	const_reverse_iterator crbegin() const noexcept { return end_.prev; }
 	reverse_iterator rend() noexcept { return &end_; }
-	const_reverse_iterator rend() const noexcept { return const_cast<node_base*>(&end_); }
-	const_reverse_iterator crend() const noexcept { return const_cast<node_base*>(&end_); }
+	const_reverse_iterator rend() const noexcept { return &end_; }
+	const_reverse_iterator crend() const noexcept { return &end_; }
 	   
 	reference front();
 	const_reference front() const;
@@ -249,21 +249,21 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, T&& val)
 
 template<class T>
 template<class ...Args>
-inline typename list<T>::reference list<T>::emplace_back(Args&& ...args)
+typename list<T>::reference list<T>::emplace_back(Args&& ...args)
 {
 	node* new_node = add_node(end_.prev, &end_, std::forward<Args>(args)...);
 	return new_node->data;
 }
 template<class T>
 template<class ...Args>
-inline typename list<T>::reference list<T>::emplace_front(Args&& ...args)
+typename list<T>::reference list<T>::emplace_front(Args&& ...args)
 {
 	node* new_node = add_node(&end_, end_.next, std::forward<Args>(args)...);
 	return new_node->data;
 }
 template<class T>
 template<class ...Args>
-inline typename list<T>::iterator list<T>::emplace(list<T>::const_iterator pos, Args&& ...args)
+typename list<T>::iterator list<T>::emplace(const_iterator pos, Args&& ...args)
 {
 	node* new_node = add_node(pos.current_->prev, pos.current_, std::forward<Args>(args)...);
 	return new_node;

@@ -21,11 +21,11 @@ gcc-address:
   script:
   - g++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -fsanitize=address -o test
   - ./test   
- clang-address:
+clang-address:
   script:
   - clang++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -fsanitize=address -o test
   - ./test
- clang-memory:
+clang-memory:
   script:
   - clang++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -fsanitize=memory -o test
   - ./test

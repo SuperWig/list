@@ -10,10 +10,10 @@ before_script:
 # Try to compile our sample hello world app
 gcc:
   script:
-  - g++ test.cpp -Wall -Wextra -Wpedantic -o test
+  - g++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -o test
   - ./test
 clang:
   script:
-  - clang++ test.cpp -Wall -Wextra -Wpedantic -o test
+  - clang++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -o test
   - ./test
    

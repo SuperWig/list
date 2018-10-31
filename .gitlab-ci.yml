@@ -24,9 +24,9 @@ gcc-address:
 clang-address:
   script:
   - clang++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=address -fsanitize-memory-track-origins -o test
-  - ./test
+  -  ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer ./test
 
 clang-memory:
   script:
-  - clang++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=memory -o test; ASAN_OPTIONS=detect_leaks=1 ./test
+  - clang++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=memory -o test; ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer ASAN_OPTIONS=detect_leaks=1 ./test
   allow_failure: true

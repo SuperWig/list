@@ -19,13 +19,14 @@ clang:
   - ./test
 gcc-address:
   script:
-  - g++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -fsanitize=address -o test
+  - g++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=address -o test
   - ./test   
 clang-address:
   script:
-  - clang++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -fsanitize=address -o test
+  - clang++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=address -fsanitize-memory-track-origins -o test
   - ./test
+
 clang-memory:
   script:
-  - clang++ test.cpp -std=c++17 -Wall -Wextra -Wpedantic -fsanitize=memory -o test
-  - ./test
+  - clang++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=memory -o test; ASAN_OPTIONS=detect_leaks=1 ./test
+  allow_failure: true

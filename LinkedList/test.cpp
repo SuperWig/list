@@ -87,3 +87,21 @@ TEST_CASE("Push R Value")
 	b.push_front(std_s(1));
 	test_and_reset();
 }
+TEST_CASE("Swap")
+{
+	list<int> odd;
+	list<int> even;
+	even.push_back(1);
+	even.push_back(3);
+	odd.push_back(2);
+	odd.push_back(4);
+	swap(odd, even);
+	int one = *odd.begin();
+	int two = *even.begin();
+	int three = *std::next(odd.begin());
+	int four = *std::next(even.begin());
+	REQUIRE(one == 1);
+	REQUIRE(two == 2);
+	REQUIRE(three == 3);
+	REQUIRE(four == 4);
+}

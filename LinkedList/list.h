@@ -1,6 +1,7 @@
 #pragma once
 #include <type_traits>
 #include <iterator>
+#include <utility>
 
 
 template<class T>
@@ -85,6 +86,7 @@ public:
 	iterator emplace(const_iterator pos, Args&&... args);
 
 	void reverse() noexcept;
+	void swap(list& other) noexcept;
 };
 
 template <class T>
@@ -280,5 +282,28 @@ void list<T>::reverse() noexcept
 		if (next == &end_)
 			break;
 		current = next;
+	}
+}
+
+template <class T>
+void list<T>::swap(list& other) noexcept
+{
+	std::swap(size_, other.size_);
+	std::swap(end_, other.end_);
+	if (size_ == 0)
+	{
+		end_.next = end_.prev = end_.as_node();
+	}
+	else
+	{
+		end_.next->prev = end_.prev->next = end_.as_node();
+	}
+	if(other.size_ == 0)
+	{
+		other.end_.next = other.end_.prev = other.end_.as_node();
+	}
+	else
+	{
+		other.end_.next->prev = other.end_.prev->next = other.end_.as_node();
 	}
 }

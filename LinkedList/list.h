@@ -1,10 +1,11 @@
 #pragma once
+#include <initializer_list>
 
 template<class T>
 class list
 {
 	template<class>
-	friend void swap(list& lhs, list& rhs);
+	friend void swap(list& lhs, list& rhs) noexcept;
 	
 	using reference = T&;
 	using const_reference = const T&;
@@ -15,7 +16,7 @@ class list
 		node_base() : prev(this), next(this) {}
 		node_base(node_base* p, node_base* n) : prev(p), next(n) {}
 		node* as_node() { return static_cast<node*>(this); }
-
+		const node* as_node() const { return static_cast<const node*>(this); }
 		node_base* prev;
 		node_base* next;
 	};
@@ -41,6 +42,7 @@ class list
 	std::size_t	size_;
 public:
 	list() : end_{}, size_(0) {}
+	list(std::initializer_list<T> init);
 	~list();
 
 	struct iterator;
@@ -88,6 +90,15 @@ public:
 	void swap(list& other) noexcept;
 };
 
+template<class T>
+list<T>::list(std::initializer_list<T> init) : size_(init.size())
+{
+	for(auto it = init.begin(); it != init.end(); ++it)
+	{
+		push_back(*it);
+	}
+}
+
 template <class T>
 list<T>::~list()
 {
@@ -131,7 +142,7 @@ struct list<T>::const_iterator
 	using pointer = const T*;
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = int;
-	const_iterator(node_base* node) : current_(node) {}
+	const_iterator(const node_base* node) : current_(node) {}
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
 	self_type operator++() { self_type cur = current_; current_ = current_->next; return cur; }
@@ -141,7 +152,7 @@ struct list<T>::const_iterator
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
 private:
-	node_base* current_;
+	const node_base* current_;
 };
 template<typename T>
 struct list<T>::reverse_iterator
@@ -175,7 +186,7 @@ struct list<T>::const_reverse_iterator
 	using pointer = const T*;
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = int;
-	const_reverse_iterator(node_base* node) : current_(node) {}
+	const_reverse_iterator(const node_base* node) : current_(node) {}
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
 	self_type operator++() { self_type cur = current_; current_ = current_->prev; return cur; }
@@ -185,7 +196,7 @@ struct list<T>::const_reverse_iterator
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
 private:
-	node_base* current_;
+	const node_base* current_;
 };
 
 template <class T>
@@ -315,7 +326,7 @@ void list<T>::swap(list& other) noexcept
 	}
 }
 template<class T>
-void swap(list<T>& lhs, list<T>& rhs)
+void swap(list<T>& lhs, list<T>& rhs) noexcept
 {
 	lhs.swap(rhs);
 }

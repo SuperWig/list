@@ -121,17 +121,17 @@ struct list<T>::iterator
 	using iterator_category = std::forward_iterator_tag;
 	using difference_type = std::ptrdiff_t;
 	iterator() : current_(nullptr) {}
-	iterator(const iterator&);
-	iterator(iterator&&);
+	iterator(const iterator&) = default;
+	iterator(iterator&&) noexcept = default;
 	iterator(node_base* node) : current_(node) {}
 	~iterator() = default;
-	self_type& operator=(const iterator&);
-	self_type& operator=(iterator&&);	
+	iterator& operator=(const iterator&) = default;
+	iterator& operator=(iterator&&) noexcept = default;
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
-	self_type& operator++() { self_type cur = current_; current_ = current_->next; return cur; }
+	self_type& operator++() { const self_type cur = current_; current_ = current_->next; return cur; }
 	self_type operator++(int) { return current_->next; }
-	self_type& operator--() { self_type cur = current_; current_ = current_->prev; return cur; }
+	self_type& operator--() { const self_type cur = current_; current_ = current_->prev; return cur; }
 	self_type operator--(int) { return current_->prev; }
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }	
@@ -149,18 +149,18 @@ struct list<T>::const_iterator
 	using pointer = const T*;
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = std::ptrdiff_t;
-	const_iterator() : current_(nullptr) {}
+	const_iterator() = default;
 	const_iterator(const node_base* node) : current_(node) {}
-	const_iterator(const const_iterator&);
-	const_iterator(const_iterator&&);
+	const_iterator(const const_iterator&) = default;
+	const_iterator(const_iterator&&) noexcept = default;
 	~const_iterator() = default;
-	self_type& operator=(const const_iterator&);
-	self_type& operator=(const_iterator&&);
+	const_iterator& operator=(const const_iterator&) = default;
+	const_iterator& operator=(const_iterator&&) = default;
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
-	self_type& operator++() { self_type cur = current_; current_ = current_->next; return cur; }
+	self_type& operator++() { const self_type cur = current_; current_ = current_->next; return cur; }
 	self_type operator++(int) { return current_->next; }
-	self_type& operator--() { self_type cur = current_; current_ = current_->prev; return cur; }
+	self_type& operator--() { const self_type cur = current_; current_ = current_->prev; return cur; }
 	self_type operator--(int) { return current_->prev; }
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
@@ -168,6 +168,7 @@ struct list<T>::const_iterator
 private:
 	const node_base* current_;
 };
+
 template<typename T>
 struct list<T>::reverse_iterator
 {
@@ -178,18 +179,18 @@ struct list<T>::reverse_iterator
 	using pointer = T * ;
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = std::ptrdiff_t;
-	reverse_iterator() : current_(nullptr) {}
+	reverse_iterator() = default;
 	reverse_iterator(node_base* node) : current_(node) {}
-	reverse_iterator(const reverse_iterator&);
-	reverse_iterator(reverse_iterator&&);
+	reverse_iterator(const reverse_iterator&) = default;
+	reverse_iterator(reverse_iterator&&) noexcept = default;
 	~reverse_iterator() = default;
-	self_type& operator=(const reverse_iterator&);
-	self_type& operator=(reverse_iterator&&);
+	reverse_iterator& operator=(const reverse_iterator&) = default;
+	reverse_iterator& operator=(reverse_iterator&&) noexcept = default;
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
-	self_type& operator++() { self_type cur = current_; current_ = current_->prev; return cur; }
+	self_type& operator++() { const self_type cur = current_; current_ = current_->prev; return cur; }
 	self_type operator++(int) { return current_->prev; }
-	self_type& operator--() { self_type cur = current_; current_ = current_->next; return cur; }
+	self_type& operator--() { const self_type cur = current_; current_ = current_->next; return cur; }
 	self_type operator--(int) { return current_->next; }
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
@@ -207,18 +208,18 @@ struct list<T>::const_reverse_iterator
 	using pointer = const T*;
 	using iterator_category = std::bidirectional_iterator_tag;
 	using difference_type = int;
-	const_reverse_iterator() : current_(nullptr) {}
+	const_reverse_iterator() = default;
 	const_reverse_iterator(const node_base* node) : current_(node) {}
-	const_reverse_iterator(const const_reverse_iterator&);
-	const_reverse_iterator(const_reverse_iterator&&);
+	const_reverse_iterator(const const_reverse_iterator&) = default;
+	const_reverse_iterator(const_reverse_iterator&&) noexcept = default;
 	~const_reverse_iterator() = default;
-	self_type& operator=(const const_reverse_iterator&);
-	self_type& operator=(const_reverse_iterator&&);
+	const_reverse_iterator& operator=(const const_reverse_iterator&) = default;
+	const_reverse_iterator& operator=(const_reverse_iterator&&) = default;
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
-	self_type& operator++() { self_type cur = current_; current_ = current_->prev; return cur; }
+	self_type& operator++() { const self_type cur = current_; current_ = current_->prev; return cur; }
 	self_type operator++(int) { return current_->prev; }
-	self_type& operator--() { self_type cur = current_; current_ = current_->next; return cur; }
+	self_type& operator--() { const self_type cur = current_; current_ = current_->next; return cur; }
 	self_type operator--(int) { return current_->next; }
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
@@ -353,6 +354,7 @@ void list<T>::swap(list& other) noexcept
 		other.end_.next->prev = other.end_.prev->next = other.end_.as_node();
 	}
 }
+
 template<class T>
 void swap(list<T>& lhs, list<T>& rhs) noexcept
 {

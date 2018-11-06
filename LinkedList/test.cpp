@@ -104,4 +104,14 @@ TEST_CASE("Swap")
 	REQUIRE(two == 2);
 	REQUIRE(three == 3);
 	REQUIRE(four == 4);
+
+}
+TEST_CASE("Swap iterator")
+{
+	list<int> a = { 1,2,3 };
+	list<int> b = { 4,5,6 };
+	auto itera = a.begin();
+	auto iterb = b.begin();
+	std::swap(itera, iterb);
+	REQUIRE(itera == b.begin());
 }

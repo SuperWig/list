@@ -125,7 +125,7 @@ struct list<T>::iterator
 	using pointer = T*;
 	using iterator_category = std::forward_iterator_tag;
 	using difference_type = std::ptrdiff_t;
-	iterator() : current_(nullptr) {}
+	iterator() = default;
 	iterator(const iterator&) = default;
 	iterator(iterator&&) noexcept = default;
 	iterator(node_base* node) : current_(node) {}
@@ -135,11 +135,11 @@ struct list<T>::iterator
 	reference operator*() { return current_->as_node()->data; }
 	pointer operator->() { return &current_->as_node()->data; }
 	self_type& operator++() { current_ = current_->next; return *this; }
-	self_type operator++(int) { const iterator ret(current_); current_->next; return ret; }
+	self_type operator++(int) { const self_type ret(current_); current_->next; return ret; }
 	self_type& operator--() { current_ = current_->prev; return *this; }
-	self_type operator--(int) { const iterator ret(current_); current_->prev; return ret; }
-	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
-	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }	
+	self_type operator--(int) { const self_type ret(current_); current_->prev; return ret; }
+	bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
+	bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }	
 private:
 	node_base* current_;
 };
@@ -166,8 +166,8 @@ struct list<T>::const_iterator
 	self_type operator++(int) { const self_type ret(current_); current_->next; return ret; }
 	self_type& operator--() { current_ = current_->prev; return *this; }
 	self_type operator--(int) { const self_type ret(current_); current_->prev; return ret; }
-	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
-	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
+	bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
+	bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }
 private:
 	const node_base* current_;
 };

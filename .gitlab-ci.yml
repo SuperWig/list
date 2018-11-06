@@ -35,5 +35,6 @@ clang-memory:
   - MSAN_SYMBOLIZER_PATH=/usr/lib/llvm-8/bin/llvm-symbolizer ASAN_OPTIONS=detect_leaks=1 ./test
   allow_failure: true
 clang-ub:
+  script:
   - clang++ test.cpp -std=c++17 -g -Wall -Wextra -Wpedantic -fsanitize=undefined  -o test
   - ./test

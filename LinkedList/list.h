@@ -61,12 +61,12 @@ public:
 	iterator end() noexcept { return &end_; }
 	const_iterator end() const noexcept { return &end_; }
 	const_iterator cend() const noexcept { return &end_; }
-	reverse_iterator rbegin() noexcept { return end_.prev; }
-	const_reverse_iterator rbegin() const noexcept { return end_.prev; }
-	const_reverse_iterator crbegin() const noexcept { return end_.prev; }
-	reverse_iterator rend() noexcept { return &end_; }
-	const_reverse_iterator rend() const noexcept { return &end_; }
-	const_reverse_iterator crend() const noexcept { return &end_; }
+	reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+	const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+	const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(end()); }
+	reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+	const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
+	const_reverse_iterator crend() const noexcept { return const_reverse_iterator(begin()); }
 
 	reference front();
 	const_reference front() const;
@@ -140,7 +140,6 @@ struct list<T>::iterator
 	self_type operator--(int) { const iterator ret(current_); current_->prev; return ret; }
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }	
-	//void swap(iterator& other) noexcept(std::is_nothrow_assignable_v<T>()) { std::swap(this, other); }
 private:
 	node_base* current_;
 };
@@ -169,7 +168,6 @@ struct list<T>::const_iterator
 	self_type operator--(int) { const self_type ret(current_); current_->prev; return ret; }
 	bool operator==(const self_type& rhs) { return current_ == rhs.current_; }
 	bool operator!=(const self_type& rhs) { return current_ != rhs.current_; }
-	//void swap(const_iterator&);
 private:
 	const node_base* current_;
 };

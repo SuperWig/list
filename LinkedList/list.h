@@ -25,8 +25,8 @@ class list
 	{
 		node_base() : prev(this), next(this) {}
 		node_base(node_base* p, node_base* n) : prev(p), next(n) {}
-		node* as_node() { return static_cast<node*>(this); }
-		const node* as_node() const { return static_cast<const node*>(this); }
+		[[nodiscard]] node* as_node() { return static_cast<node*>(this); }
+		[[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); }
 		node_base* prev;
 		node_base* next;
 	};
@@ -54,28 +54,26 @@ public:
 	list() : end_{}, size_(0) {}
 	list(std::initializer_list<T> init);
 	~list();
-	
-	iterator begin() noexcept { return end_.next; }
-	const_iterator begin() const noexcept { return end_.next; }
-	const_iterator cbegin() const noexcept { return end_.next; }
-	iterator end() noexcept { return &end_; }
-	const_iterator end() const noexcept { return &end_; }
-	const_iterator cend() const noexcept { return &end_; }
-	reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
-	const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
-	const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(end()); }
-	reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
-	const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
-	const_reverse_iterator crend() const noexcept { return const_reverse_iterator(begin()); }
+	[[nodiscard]] iterator begin() noexcept { return end_.next; }
+	[[nodiscard]] const_iterator begin() const noexcept { return end_.next; }
+	[[nodiscard]] const_iterator cbegin() const noexcept { return end_.next; }
+	[[nodiscard]] iterator end() noexcept { return &end_; }
+	[[nodiscard]] const_iterator end() const noexcept { return &end_; }
+	[[nodiscard]] const_iterator cend() const noexcept { return &end_; }
+	[[nodiscard]] reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+	[[nodiscard]] const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+	[[nodiscard]] const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(end()); }
+	[[nodiscard]] reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+	[[nodiscard]] const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
+	[[nodiscard]] const_reverse_iterator crend() const noexcept { return const_reverse_iterator(begin()); }
 
-	reference front();
-	const_reference front() const;
-	reference back();
-	const_reference back() const;
+	[[nodiscard]] reference front();
+	[[nodiscard]] const_reference front() const;
+	[[nodiscard]] reference back();
+	[[nodiscard]] const_reference back() const;
 
-	std::size_t size() const noexcept { return size_; }
-	[[nodiscard]]
-	bool empty() const noexcept { return !size_; }
+	[[nodiscard]] std::size_t size() const noexcept { return size_; }
+	[[nodiscard]] bool empty() const noexcept { return !size_; }
 
 	void push_back(const T& val);
 	void push_back(T&& val);
@@ -132,14 +130,14 @@ struct list<T>::iterator
 	~iterator() = default;
 	iterator& operator=(const iterator&) = default;
 	iterator& operator=(iterator&&) noexcept = default;
-	reference operator*() { return current_->as_node()->data; }
-	pointer operator->() { return &current_->as_node()->data; }
+	[[nodiscard]] reference operator*() { return current_->as_node()->data; }
+	[[nodiscard]] pointer operator->() { return &current_->as_node()->data; }
 	self_type& operator++() { current_ = current_->next; return *this; }
 	self_type operator++(int) { const self_type ret(current_); current_->next; return ret; }
 	self_type& operator--() { current_ = current_->prev; return *this; }
 	self_type operator--(int) { const self_type ret(current_); current_->prev; return ret; }
-	bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
-	bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }	
+	[[nodiscard]] bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
+	[[nodiscard]] bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }
 private:
 	node_base* current_;
 };
@@ -160,14 +158,14 @@ struct list<T>::const_iterator
 	~const_iterator() = default;
 	const_iterator& operator=(const const_iterator&) = default;
 	const_iterator& operator=(const_iterator&&) = default;
-	reference operator*() { return current_->as_node()->data; }
-	pointer operator->() { return &current_->as_node()->data; }
+	[[nodiscard]] reference operator*() { return current_->as_node()->data; }
+	[[nodiscard]] pointer operator->() { return &current_->as_node()->data; }
 	self_type& operator++() { current_ = current_->next; return *this; }
 	self_type operator++(int) { const self_type ret(current_); current_->next; return ret; }
 	self_type& operator--() { current_ = current_->prev; return *this; }
 	self_type operator--(int) { const self_type ret(current_); current_->prev; return ret; }
-	bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
-	bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }
+	[[nodiscard]] bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
+	[[nodiscard]] bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }
 private:
 	const node_base* current_;
 };

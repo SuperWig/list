@@ -1,0 +1,30 @@
+BasedOnStyle:  WebKit
+AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: true
+AlignEscapedNewlines: Left
+AlignTrailingComments: false
+AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AlwaysBreakTemplateDeclarations: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Allman
+ColumnLimit:     120
+Cpp11BracedListStyle: true
+FixNamespaceComments: false
+IncludeBlocks:   Merge 
+IncludeCategories:
+  - Regex:           '<c[[:alnum:].]+>'
+    Priority:        1
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        2
+  - Regex:           '"[[:alnum:].]+"'
+    Priority:        4
+  - Regex:           '.*'
+    Priority:        3
+IndentWidth:     4
+IndentWrappedFunctionNames: true
+MaxEmptyLinesToKeep: 2
+NamespaceIndentation: All
+PointerAlignment: Left
+SpaceAfterCStyleCast: true

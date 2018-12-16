@@ -49,11 +49,11 @@ std::size_t my_s::count  = 0;
 using Iterator      = list<bool>::iterator;
 using ConstIterator = list<bool>::const_iterator;
 
-static_assert(std::is_copy_constructible<ConstIterator>::value);
-static_assert(std::is_trivially_copy_constructible<ConstIterator>::value);
+static_assert(std::is_copy_constructible_v<ConstIterator>);
+static_assert(std::is_trivially_copy_constructible_v<ConstIterator>);
 
-static_assert(std::is_copy_constructible<Iterator>::value);
-static_assert(std::is_trivially_copy_constructible<Iterator>::value);
+static_assert(std::is_copy_constructible_v<Iterator>);
+static_assert(std::is_trivially_copy_constructible_v<Iterator>);
 
 void reset_count()
 {

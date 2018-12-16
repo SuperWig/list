@@ -49,11 +49,11 @@ std::size_t my_s::count  = 0;
 using Iterator      = list<bool>::iterator;
 using ConstIterator = list<bool>::const_iterator;
 
-static_assert(std::is_copy_constructible_v<ConstIterator>);
-static_assert(std::is_trivially_copy_constructible_v<ConstIterator>);
+static_assert(std::is_copy_constructible<ConstIterator>::value);
+static_assert(std::is_trivially_copy_constructible<ConstIterator>::value);
 
-static_assert(std::is_copy_constructible_v<Iterator>);
-static_assert(std::is_trivially_copy_constructible_v<Iterator>);
+static_assert(std::is_copy_constructible<Iterator>::value);
+static_assert(std::is_trivially_copy_constructible<Iterator>::value);
 
 void reset_count()
 {
@@ -143,5 +143,5 @@ TEST_CASE("Swap iterator")
 TEST_CASE("Const iterator")
 {
     list<int> c;
-    list<int>::const_iterator it = c.begin();
+    [[gnu::unused]] list<int>::const_iterator it = c.begin();
 }

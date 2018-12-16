@@ -17,11 +17,10 @@ class list
         }
         node_base(node_base* p, node_base* n)
             : prev(p)
-            , next(n){}[[nodiscard]] node * as_node()
-        {
-            return static_cast<node*>(this);
-        }
-        [[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); } node_base* prev;
+            , next(n){}
+		[[nodiscard]] node * as_node() { return static_cast<node*>(this); }
+        [[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); } 
+		node_base* prev;
         node_base* next;
     };
     struct node : node_base
@@ -52,19 +51,20 @@ class list
 
     node_base end_;
     std::size_t size_;
+    template <bool is_const>
+    struct iter_t;
 
 public:
-    // forward declarations;
-    struct iterator;
-    struct const_iterator;
-    // types
+    // typedefs
     using value_type             = T;
     using pointer                = T*;
     using const_pointer          = const T*;
-    using reference              = value_type&;
-    using const_reference        = const value_type&;
+    using reference              = T&;
+    using const_reference        = const T&;
     using size_type              = std::size_t;
     using difference_type        = std::ptrdiff_t;
+    using iterator				 = iter_t<false>;
+    using const_iterator		 = iter_t<true>;
     using reverse_iterator       = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -136,104 +136,58 @@ list<T>::~list()
 }
 
 template <typename T>
-struct list<T>::iterator
+template <bool is_const>
+struct list<T>::iter_t
 {
     friend class list;
-    using self_type               = iterator;
-    using value_type              = T;
-    using reference               = T&;
-    using pointer                 = T*;
-    using iterator_category       = std::forward_iterator_tag;
-    using difference_type         = std::ptrdiff_t;
-    iterator()                    = default;
-    iterator(const iterator&)     = default;
-    iterator(iterator&&) noexcept = default;
-    iterator(node_base* node)
-        : current_(node)
-    {
-    }
-    ~iterator()       = default;
-    iterator& operator=(const iterator&) = default;
-    iterator& operator=(iterator&&) noexcept = default;
-    [[nodiscard]] reference operator*() { return current_->as_node()->data; }
-    [[nodiscard]] pointer operator->() { return &current_->as_node()->data; }
-    self_type& operator++()
-    {
-        current_ = current_->next;
-        return *this;
-    }
-    self_type operator++(int)
-    {
-        const self_type ret(current_);
-        current_->next;
-        return ret;
-    }
-    self_type& operator--()
-    {
-        current_ = current_->prev;
-        return *this;
-    }
-    self_type operator--(int)
-    {
-        const self_type ret(current_);
-        current_->prev;
-        return ret;
-    }
-    [[nodiscard]] bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
-    [[nodiscard]] bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }
-
-private:
-    node_base* current_;
-};
-template <typename T>
-struct list<T>::const_iterator
-{
-    friend class list;
-    using self_type         = const_iterator;
+    using node_base_t       = std::conditional_t<is_const, const node_base*, node_base*>;
     using value_type        = T;
-    using reference         = const T&;
-    using pointer           = const T*;
+    using reference         = std::conditional_t<is_const, const T&, T&>;
+    using pointer           = std::conditional_t<is_const, const T*, T*>;
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type   = std::ptrdiff_t;
-    const_iterator()        = default;
-    const_iterator(const node_base* node)
+
+    iter_t()                  = default;
+    iter_t(const iter_t&)     = default;
+    iter_t(iter_t&&) noexcept = default;
+    iter_t(node_base_t node)
         : current_(node)
     {
     }
-    const_iterator(const const_iterator&)     = default;
-    const_iterator(const_iterator&&) noexcept = default;
-    ~const_iterator()                         = default;
-    const_iterator& operator=(const const_iterator&) = default;
-    const_iterator& operator=(const_iterator&&) = default;
+	//implicit conversion to const_iterator
+    operator iter_t<true>() const noexcept { return current_; }
+    ~iter_t()       = default;
+    iter_t& operator=(const iter_t&) = default;
+    iter_t& operator=(iter_t&&) noexcept = default;
     [[nodiscard]] reference operator*() { return current_->as_node()->data; }
     [[nodiscard]] pointer operator->() { return &current_->as_node()->data; }
-    self_type& operator++()
+    iter_t& operator++()
     {
         current_ = current_->next;
         return *this;
     }
-    self_type operator++(int)
+    iter_t operator++(int)
     {
-        const self_type ret(current_);
+        const iter_t ret(current_);
         current_->next;
         return ret;
     }
-    self_type& operator--()
+    iter_t& operator--()
     {
         current_ = current_->prev;
         return *this;
     }
-    self_type operator--(int)
+    iter_t operator--(int)
     {
-        const self_type ret(current_);
+        const iter_t ret(current_);
         current_->prev;
         return ret;
     }
-    [[nodiscard]] bool operator==(const self_type& rhs) const { return current_ == rhs.current_; }
-    [[nodiscard]] bool operator!=(const self_type& rhs) const { return current_ != rhs.current_; }
+    [[nodiscard]] bool operator==(const iter_t& rhs) const { return current_ == rhs.current_; }
+    [[nodiscard]] bool operator!=(const iter_t& rhs) const { return current_ != rhs.current_; }
 
 private:
-    const node_base* current_;
+    node_base_t current_;
 };
 
 template <class T>

@@ -139,3 +139,9 @@ TEST_CASE("Swap iterator")
     std::swap(itera, iterb);
     REQUIRE(itera == b.begin());
 }
+
+TEST_CASE("Const iterator")
+{
+    list<int> c;
+    list<int>::const_iterator it = c.begin();
+}

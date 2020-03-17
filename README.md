@@ -1,2 +1,2 @@
 # LinkedList
-Doubly linked list with smart pointers.
+Doubly linked list

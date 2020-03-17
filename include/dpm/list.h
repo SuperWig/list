@@ -1,6 +1,8 @@
 #pragma once
 #include <initializer_list>
 
+namespace dpm
+{
 template <class T>
 class list
 {
@@ -18,9 +20,9 @@ class list
         node_base(node_base* p, node_base* n)
             : prev(p)
             , next(n){}
-		[[nodiscard]] node * as_node() { return static_cast<node*>(this); }
+        [[nodiscard]] node * as_node() { return static_cast<node*>(this); }
         [[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); } 
-		node_base* prev;
+        node_base* prev;
         node_base* next;
     };
     struct node : node_base
@@ -49,8 +51,8 @@ class list
     }
     void delete_node(node_base* node);
 
-    node_base end_;
-    std::size_t size_;
+    node_base end_{};
+    std::size_t size_{};
     template <bool is_const>
     struct iter_t;
 
@@ -63,16 +65,12 @@ public:
     using const_reference        = const T&;
     using size_type              = std::size_t;
     using difference_type        = std::ptrdiff_t;
-    using iterator				 = iter_t<false>;
-    using const_iterator		 = iter_t<true>;
+    using iterator               = iter_t<false>;
+    using const_iterator         = iter_t<true>;
     using reverse_iterator       = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-    list()
-        : end_{}
-        , size_(0)
-    {
-    }
+    list() = default;
     list(std::initializer_list<T> init);
     ~list();
     [[nodiscard]] iterator begin() noexcept { return end_.next; }
@@ -96,6 +94,9 @@ public:
     [[nodiscard]] std::size_t size() const noexcept { return size_; }
     [[nodiscard]] bool empty() const noexcept { return !size_; }
 
+    void pop_back();
+    void pop_front();
+
     void push_back(const T& val);
     void push_back(T&& val);
     void push_front(const T& val);
@@ -115,8 +116,7 @@ public:
 };
 
 template <class T>
-list<T>::list(std::initializer_list<T> init)
-    : size_(init.size())
+list<T>::list(std::initializer_list<T> init) : size_(0)
 {
     for (auto it = init.begin(); it != init.end(); ++it)
     {
@@ -154,7 +154,7 @@ struct list<T>::iter_t
         : current_(node)
     {
     }
-	//implicit conversion to const_iterator
+    //implicit conversion to const_iterator
     operator iter_t<true>() const noexcept { return current_; }
     ~iter_t()       = default;
     iter_t& operator=(const iter_t&) = default;
@@ -221,6 +221,22 @@ void list<T>::delete_node(node_base* node)
     node->next->prev = node->prev;
     delete node;
     --size_;
+}
+
+template <class T>
+void list<T>::pop_back()
+{
+    auto temp(end_.prev);
+    end_.prev = end_.prev->prev;
+    delete_node(temp);
+}
+
+template <class T>
+void list<T>::pop_front()
+{
+    auto temp(end_.next);
+    end_.next = end_.next->next;
+    delete_node(temp);
 }
 
 template <class T>
@@ -322,3 +338,4 @@ void swap(list<T>& lhs, list<T>& rhs) noexcept(noexcept(lhs.swap(rhs)))
 {
     lhs.swap(rhs);
 }
+}//namespace dpm

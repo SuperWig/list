@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <list>
-#include "catch.hpp"
-#include "list.h"
+#include "catch2/catch.hpp"
+#include "dpm/list.h"
 
 struct std_s
 {
@@ -46,8 +46,8 @@ struct my_s
 std::size_t std_s::count = 0;
 std::size_t my_s::count  = 0;
 
-using Iterator      = list<bool>::iterator;
-using ConstIterator = list<bool>::const_iterator;
+using Iterator      = dpm::list<bool>::iterator;
+using ConstIterator = dpm::list<bool>::const_iterator;
 
 static_assert(std::is_copy_constructible_v<ConstIterator>);
 static_assert(std::is_trivially_copy_constructible_v<ConstIterator>);
@@ -67,7 +67,7 @@ void test_and_reset()
     reset_count();
 }
 
-using my_list  = list<my_s>;
+using my_list  = dpm::list<my_s>;
 using std_list = std::list<std_s>;
 
 TEST_CASE("Default")
@@ -114,8 +114,8 @@ TEST_CASE("Push R Value")
 }
 TEST_CASE("Swap")
 {
-    list<int> odd;
-    list<int> even;
+    dpm::list<int> odd;
+    dpm::list<int> even;
     even.push_back(1);
     even.push_back(3);
     odd.push_back(2);
@@ -132,16 +132,48 @@ TEST_CASE("Swap")
 }
 TEST_CASE("Swap iterator")
 {
-    list<int> a = {1, 2, 3};
-    list<int> b = {4, 5, 6};
-    auto itera  = a.begin();
-    auto iterb  = b.begin();
+    dpm::list<int> a = {1, 2, 3};
+    dpm::list<int> b = {4, 5, 6};
+    auto itera       = a.begin();
+    auto iterb       = b.begin();
     std::swap(itera, iterb);
     REQUIRE(itera == b.begin());
+    REQUIRE(iterb == a.begin());
 }
 
 TEST_CASE("Const iterator")
 {
-    list<int> c;
-    [[gnu::unused]] list<int>::const_iterator it = c.begin();
+    dpm::list<int> c;
+    [[gnu::unused]] dpm::list<int>::const_iterator it = c.begin();
+}
+
+TEST_CASE("Default init")
+{
+    dpm::list<int> list;
+    REQUIRE(list.empty());
+}
+TEST_CASE("std::inititalizer_list init")
+{
+    dpm::list<int> list{ 2,4,6 };
+    REQUIRE(list.front() == 2);
+    REQUIRE(list.back() == 6);
+    REQUIRE(list.size() == 3);
+}
+
+TEST_CASE("pop_back")
+{
+    dpm::list<int> list{ 1,2,3 };
+    list.pop_back();
+    REQUIRE(list.front() == 1);
+    REQUIRE(list.back() == 2);
+    REQUIRE(list.size() == 2);
+}
+
+TEST_CASE("pop_front")
+{
+    dpm::list<int> list{ 1,2,3 };
+    list.pop_front();
+    REQUIRE(list.front() == 2);
+    REQUIRE(list.back() == 3);
+    REQUIRE(list.size() == 2);
 }

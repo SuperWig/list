@@ -111,7 +111,7 @@ public:
 };
 
 template <class T>
-list<T>::list(std::initializer_list<T> init) : size_(0)
+list<T>::list(std::initializer_list<T> init)
 {
     for (auto it = init.begin(); it != init.end(); ++it)
     {

@@ -46,7 +46,7 @@ class list
     }
     void delete_node(node_base* node);
 
-    node_base end_{};
+    node_base* end_ = new node_base;
     std::size_t size_{};
     template <bool is_const>
     struct iterator_impl;
@@ -68,12 +68,13 @@ public:
     list() = default;
     list(std::initializer_list<T> init);
     ~list();
-    [[nodiscard]] iterator begin() noexcept { return end_.next; }
-    [[nodiscard]] const_iterator begin() const noexcept { return end_.next; }
-    [[nodiscard]] const_iterator cbegin() const noexcept { return end_.next; }
-    [[nodiscard]] iterator end() noexcept { return &end_; }
-    [[nodiscard]] const_iterator end() const noexcept { return &end_; }
-    [[nodiscard]] const_iterator cend() const noexcept { return &end_; }
+
+    [[nodiscard]] iterator begin() noexcept { return end_->next; }
+    [[nodiscard]] const_iterator begin() const noexcept { return end_->next; }
+    [[nodiscard]] const_iterator cbegin() const noexcept { return end_->next; }
+    [[nodiscard]] iterator end() noexcept { return end_; }
+    [[nodiscard]] const_iterator end() const noexcept { return end_; }
+    [[nodiscard]] const_iterator cend() const noexcept { return end_; }
     [[nodiscard]] reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
     [[nodiscard]] const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
     [[nodiscard]] const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(end()); }
@@ -122,12 +123,13 @@ list<T>::list(std::initializer_list<T> init)
 template <class T>
 list<T>::~list()
 {
-    for (node_base* next = end_.next; next != &end_;)
+    for (node_base* next = end_->next; next != end_;)
     {
         node* del = next->as_node();
         next      = next->next;
         delete del;
     }
+    delete end_;
 }
 
 template <typename T>
@@ -187,25 +189,25 @@ private:
 template <class T>
 typename list<T>::reference list<T>::front()
 {
-    return end_.next->as_node()->data;
+    return end_->next->as_node()->data;
 }
 
 template <class T>
 typename list<T>::const_reference list<T>::front() const
 {
-    return end_.next->as_node()->data;
+    return end_->next->as_node()->data;
 }
 
 template <class T>
 typename list<T>::reference list<T>::back()
 {
-    return end_.prev->as_node()->data;
+    return end_->prev->as_node()->data;
 }
 
 template <class T>
 typename list<T>::const_reference list<T>::back() const
 {
-    return end_.prev->as_node()->data;
+    return end_->prev->as_node()->data;
 }
 
 template <class T>
@@ -220,41 +222,41 @@ void list<T>::delete_node(node_base* node)
 template <class T>
 void list<T>::pop_back()
 {
-    auto temp(end_.prev);
-    end_.prev = end_.prev->prev;
+    auto temp(end_->prev);
+    end_->prev = end_->prev->prev;
     delete_node(temp);
 }
 
 template <class T>
 void list<T>::pop_front()
 {
-    auto temp(end_.next);
-    end_.next = end_.next->next;
+    auto temp(end_->next);
+    end_->next = end_->next->next;
     delete_node(temp);
 }
 
 template <class T>
 void list<T>::push_back(const T& val)
 {
-    add_node(end_.prev, &end_, val);
+    add_node(end_->prev, end_, val);
 }
 
 template <class T>
 void list<T>::push_back(T&& val)
 {
-    add_node(end_.prev, &end_, std::move(val));
+    add_node(end_->prev, end_, std::move(val));
 }
 
 template <class T>
 void list<T>::push_front(const T& val)
 {
-    add_node(&end_, end_.next, val);
+    add_node(end_, end_->next, val);
 }
 
 template <class T>
 void list<T>::push_front(T&& val)
 {
-    add_node(&end_, end_.next, std::move(val));
+    add_node(end_, end_->next, std::move(val));
 }
 template <class T>
 typename list<T>::iterator list<T>::insert(const_iterator pos, const T& val)
@@ -272,14 +274,14 @@ template <class T>
 template <class... Args>
 typename list<T>::reference list<T>::emplace_back(Args&&... args)
 {
-    node* new_node = add_node(end_.prev, &end_, std::forward<Args>(args)...);
+    node* new_node = add_node(end_->prev, end_, std::forward<Args>(args)...);
     return new_node->data;
 }
 template <class T>
 template <class... Args>
 typename list<T>::reference list<T>::emplace_front(Args&&... args)
 {
-    node* new_node = add_node(&end_, end_.next, std::forward<Args>(args)...);
+    node* new_node = add_node(end_, end_->next, std::forward<Args>(args)...);
     return new_node->data;
 }
 template <class T>
@@ -293,12 +295,12 @@ typename list<T>::iterator list<T>::emplace(const_iterator pos, Args&&... args)
 template <class T>
 void list<T>::reverse() noexcept
 {
-    for (node_base* current = &end_;;)
+    for (node_base* current = end_;;)
     {
         node_base* next = current->next;
         current->next   = current->prev;
         current->prev   = next;
-        if (next == &end_)
+        if (next == end_)
             break;
         current = next;
     }
@@ -309,22 +311,6 @@ void list<T>::swap(list& other) noexcept
 {
     std::swap(size_, other.size_);
     std::swap(end_, other.end_);
-    if (size_ == 0)
-    {
-        end_.next = end_.prev = end_.as_node();
-    }
-    else
-    {
-        end_.next->prev = end_.prev->next = end_.as_node();
-    }
-    if (other.size_ == 0)
-    {
-        other.end_.next = other.end_.prev = other.end_.as_node();
-    }
-    else
-    {
-        other.end_.next->prev = other.end_.prev->next = other.end_.as_node();
-    }
 }
 
 template <class T>

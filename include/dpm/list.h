@@ -66,8 +66,14 @@ public:
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     list() = default;
+    list(const list& other);
+    list(list&& other) noexcept;
     list(std::initializer_list<T> init);
     ~list();
+
+    //TODO
+    list& operator=(const list&);
+    list& operator=(list&&);
 
     [[nodiscard]] iterator begin() noexcept { return end_->next; }
     [[nodiscard]] const_iterator begin() const noexcept { return end_->next; }
@@ -112,11 +118,26 @@ public:
 };
 
 template <class T>
+list<T>::list(const list& other)
+{
+    for (auto&& val : other)
+    {
+        push_back(val);
+    }
+}
+
+template <class T>
+list<T>::list(list&& other) noexcept
+{
+    swap(other);
+}
+
+template <class T>
 list<T>::list(std::initializer_list<T> init)
 {
-    for (auto it = init.begin(); it != init.end(); ++it)
+    for (auto&& val : init)
     {
-        push_back(*it);
+        push_back(val);
     }
 }
 

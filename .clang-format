@@ -9,9 +9,10 @@ AllowShortFunctionsOnASingleLine: All
 AlwaysBreakTemplateDeclarations: true
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Allman
-ColumnLimit:     120
-Cpp11BracedListStyle: true
-FixNamespaceComments: false
+ColumnLimit:     150
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+Cpp11BracedListStyle: false
+FixNamespaceComments: true
 IncludeBlocks:   Merge 
 IncludeCategories:
   - Regex:           '<c[[:alnum:].]+>'
@@ -25,6 +26,7 @@ IncludeCategories:
 IndentWidth:     4
 IndentWrappedFunctionNames: true
 MaxEmptyLinesToKeep: 2
-NamespaceIndentation: All
+NamespaceIndentation: None
 PointerAlignment: Left
 SpaceAfterCStyleCast: true
+SpaceBeforeCpp11BracedList: false

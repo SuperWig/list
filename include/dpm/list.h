@@ -12,25 +12,17 @@ class list
     struct node;
     struct node_base
     {
-        node_base()
-            : prev(this)
-            , next(this)
-        {
-        }
-        node_base(node_base* p, node_base* n)
-            : prev(p)
-            , next(n){}
-        [[nodiscard]] node * as_node() { return static_cast<node*>(this); }
-        [[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); } 
+        node_base() : prev(this), next(this) {}
+        node_base(node_base* p, node_base* n) : prev{ p }, next{ n } {}
+        [[nodiscard]] node* as_node() { return static_cast<node*>(this); }
+        [[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); }
         node_base* prev;
         node_base* next;
     };
     struct node : node_base
     {
         template <typename... Args>
-        node(node_base* prev, node_base* next, Args&&... val)
-            : node_base{prev, next}
-            , data(std::forward<Args>(val)...)
+        node(node_base* prev, node_base* next, Args&&... val) : node_base{ prev, next }, data(std::forward<Args>(val)...)
         {
         }
         T data;
@@ -71,7 +63,7 @@ public:
     list(std::initializer_list<T> init);
     ~list();
 
-    //TODO
+    // TODO
     list& operator=(const list&);
     list& operator=(list&&);
 
@@ -164,16 +156,14 @@ struct list<T>::iterator_impl
     using iterator_category = std::bidirectional_iterator_tag;
     using difference_type   = std::ptrdiff_t;
 
-    iterator_impl()                  = default;
+    iterator_impl()                         = default;
     iterator_impl(const iterator_impl&)     = default;
     iterator_impl(iterator_impl&&) noexcept = default;
-    iterator_impl(node_base_t node)
-        : current_(node)
-    {
-    }
-    //implicit conversion to const_iterator
+    iterator_impl(node_base_t node) : current_(node) {}
+    ~iterator_impl() = default;
+
+    // implicit conversion to const_iterator
     operator iterator_impl<true>() const noexcept { return current_; }
-    ~iterator_impl()       = default;
     iterator_impl& operator=(const iterator_impl&) = default;
     iterator_impl& operator=(iterator_impl&&) noexcept = default;
     [[nodiscard]] reference operator*() { return current_->as_node()->data; }
@@ -339,4 +329,4 @@ void swap(list<T>& lhs, list<T>& rhs) noexcept(noexcept(lhs.swap(rhs)))
 {
     lhs.swap(rhs);
 }
-}//namespace dpm
+} // namespace dpm

@@ -104,6 +104,9 @@ public:
     template <class... Args>
     iterator emplace(const_iterator pos, Args&&... args);
 
+    iterator erase(const_iterator pos);
+    iterator erase(const_iterator first, const_iterator last);
+
     void reverse() noexcept;
     void swap(list& other) noexcept;
 };
@@ -300,6 +303,27 @@ typename list<T>::iterator list<T>::emplace(const_iterator pos, Args&&... args)
 {
     node* new_node = add_node(pos.current_->prev, pos.current_, std::forward<Args>(args)...);
     return new_node;
+}
+
+template <class T>
+typename list<T>::iterator list<T>::erase(const_iterator pos)
+{
+    auto next = pos.current_->next;
+    delete_node(pos.current_);
+    return next;
+}
+
+template <class T>
+typename list<T>::iterator list<T>::erase(const_iterator first, const_iterator last)
+{
+    auto n_first = first.current_;
+    while (n_first != last.current_)
+    {
+        auto next = n_first->next;
+        delete_node(n_first);
+        n_first = next;
+    }
+    return n_first;
 }
 
 template <class T>

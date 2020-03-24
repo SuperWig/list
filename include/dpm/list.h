@@ -12,12 +12,12 @@ class list
     struct node;
     struct node_base
     {
-        node_base() : prev(this), next(this) {}
+        node_base() = default;
         node_base(node_base* p, node_base* n) : prev{ p }, next{ n } {}
         [[nodiscard]] node* as_node() { return static_cast<node*>(this); }
         [[nodiscard]] const node* as_node() const { return static_cast<const node*>(this); }
-        node_base* prev;
-        node_base* next;
+        node_base* prev = this;
+        node_base* next = this;
     };
     struct node : node_base
     {
@@ -44,7 +44,6 @@ class list
     struct iterator_impl;
 
 public:
-    // typedefs
     using value_type             = T;
     using pointer                = T*;
     using const_pointer          = const T*;

@@ -148,7 +148,7 @@ template <typename T>
 template <bool is_const>
 struct list<T>::iterator_impl
 {
-    using node_base_t       = std::conditional_t<is_const, const node_base*, node_base*>;
+    friend class list;
     using value_type        = T;
     using reference         = std::conditional_t<is_const, const T&, T&>;
     using pointer           = std::conditional_t<is_const, const T*, T*>;
@@ -158,7 +158,7 @@ struct list<T>::iterator_impl
     iterator_impl()                         = default;
     iterator_impl(const iterator_impl&)     = default;
     iterator_impl(iterator_impl&&) noexcept = default;
-    iterator_impl(node_base_t node) : current_(node) {}
+    iterator_impl(node_base* node) : current_(node) {}
     ~iterator_impl() = default;
 
     // implicit conversion to const_iterator
@@ -193,7 +193,7 @@ struct list<T>::iterator_impl
     [[nodiscard]] bool operator!=(const iterator_impl& rhs) const { return current_ != rhs.current_; }
 
 private:
-    node_base_t current_;
+    node_base* current_;
 };
 
 template <class T>

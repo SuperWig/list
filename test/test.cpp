@@ -144,7 +144,7 @@ TEST_CASE("Swap iterator")
 TEST_CASE("Const iterator")
 {
     dpm::list<int> c;
-    [[gnu::unused]] dpm::list<int>::const_iterator it = c.begin();
+    [[maybe_unused]] dpm::list<int>::const_iterator it = c.begin();
 }
 
 TEST_CASE("Default init")
@@ -176,4 +176,33 @@ TEST_CASE("pop_front")
     REQUIRE(list.front() == 2);
     REQUIRE(list.back() == 3);
     REQUIRE(list.size() == 2);
+}
+TEST_CASE("move")
+{
+    dpm::list<int> a{1, 2, 3};
+    dpm::list<int> b = std::move(a);
+    REQUIRE(b.front() == 1);
+    REQUIRE(b.size() == 3);
+    REQUIRE(b.back() == 3);
+}
+TEST_CASE("copy")
+{
+    dpm::list<int> a{ 1, 2, 3 };
+    dpm::list<int> b = a;
+    REQUIRE(b.front() == 1);
+    REQUIRE(b.size() == 3);
+    REQUIRE(b.back() == 3);
+}
+TEST_CASE("erase")
+{
+    dpm::list<int> a{ 1, 2, 3, 4, 5, 6 };
+    auto r = a.begin();
+    //a.erase(++r);
+    //1, 3, 4, 5 6
+    //a.erase(a.end(), a.end());
+}
+TEST_CASE("insert")
+{
+    dpm::list<int> a{ 1, 2, 3 };
+    a.insert(a.begin(), 2);
 }
